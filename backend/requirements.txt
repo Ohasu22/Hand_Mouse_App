@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-multipart
+opencv-python
+mediapipe
+numpy
+pyautogui
+websockets
+pydantic
+aiofiles

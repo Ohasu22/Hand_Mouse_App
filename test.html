@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Live Hand Feed</title>
+  </head>
+  <body>
+    <h2>Live Camera Feed</h2>
+    <img id="video" width="640" height="480" style="border:1px solid black;">
+    <pre id="meta"></pre>
+
+    <script>
+      const ws = new WebSocket("ws://127.0.0.1:8000/ws"); // use 127.0.0.1, not 0.0.0.0
+      const img = document.getElementById("video");
+      const metaBox = document.getElementById("meta");
+
+      ws.onopen = () => console.log("✅ Connected to backend");
+      ws.onerror = (err) => console.error("❌ WebSocket error:", err);
+      ws.onclose = () => console.log("🔌 Connection closed");
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "frame") {
+            // Show video frame
+            img.src = "data:image/jpeg;base64," + data.jpeg_base64;
+            // Show gesture metadata
+            metaBox.textContent = JSON.stringify(data.meta, null, 2);
+          }
+        } catch (err) {
+          console.error("⚠️ JSON parse error:", err, event.data);
+        }
+      };
+    </script>
+  </body>
+</html>
